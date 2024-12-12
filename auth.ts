@@ -1,74 +1,14 @@
 import NextAuth from 'next-auth';
-import Credentials from 'next-auth/providers/credentials';
+import Auth0Provider from "next-auth/providers/auth0";
 import { authConfig } from './auth.config';
-import { z } from 'zod';
-import { sql } from '@vercel/postgres';
-import type { User } from '@/app/lib/definitions';
-import bcrypt from 'bcrypt';
- 
-async function getUser(email: string): Promise<User | undefined> {
-  try {
-    const user = await sql<User>`SELECT * FROM users WHERE email=${email}`;
-    return user.rows[0];
-  } catch (error) {
-    console.error('Failed to fetch user:', error);
-    throw new Error('Failed to fetch user.');
-  }
-}
- 
-const isProduction = process.env.NODE_ENV === "production";
 
 export const { auth, signIn, signOut } = NextAuth({
   ...authConfig,
   providers: [
-    Credentials({
-      async authorize(credentials) {
-        const parsedCredentials = z
-          .object({ email: z.string().email(), password: z.string().min(6) })
-          .safeParse(credentials);
- 
-        if (parsedCredentials.success) {
-          const { email, password } = parsedCredentials.data;
-          const user = await getUser(email);
-          if (!user) return null;
-          const passwordsMatch = await bcrypt.compare(password, user.password);
-
-          if (passwordsMatch) return user;
-        }
-        console.log('Invalid credentials');
-        return null;
-      },
+    Auth0Provider({
+      clientId: process.env.AUTH0_CLIENT_ID!,
+      clientSecret: process.env.AUTH0_CLIENT_SECRET!,
+      issuer: process.env.AUTH0_ISSUER,
     }),
   ],
-  cookies: {
-    sessionToken: {
-      name: `__Secure-next-auth.session-token`,
-      options: {
-        httpOnly: true,
-        sameSite: isProduction ? "none" : "lax",
-        path: "/",
-        secure: isProduction,
-        domain: 'nextjs-dashboard-dev-seven.vercel.app'
-      },
-    },
-    callbackUrl: {
-      name: `__Secure-next-auth.callback-url`,
-      options: {
-        sameSite: isProduction ? "none" : "lax",
-        path: "/",
-        secure: isProduction,
-        domain: 'nextjs-dashboard-dev-seven.vercel.app'
-      },
-    },
-    csrfToken: {
-      name: `__Host-next-auth.csrf-token`,
-      options: {
-        httpOnly: true,
-        sameSite: isProduction ? "none" : "lax",
-        path: "/",
-        secure: isProduction,
-        domain: 'nextjs-dashboard-dev-seven.vercel.app'
-      },
-    },
-  },
 });
