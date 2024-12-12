@@ -1,7 +1,7 @@
 'use client';
 
 import { lusitana } from '@/app/ui/fonts';
-import { signIn } from 'next-auth/react';
+import { signIn } from '@/auth';
 import { Button } from './button';
 
 export default function LoginForm() {
