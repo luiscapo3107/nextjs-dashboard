@@ -11,6 +11,7 @@ export function middleware(request: NextRequest) {
     secure: isProduction,
     sameSite: isProduction ? 'none' : 'lax',
     path: '/',
+    domain: 'nextjs-dashboard-dev-seven.vercel.app'
   });
 
   return response;

@@ -47,7 +47,8 @@ export const { auth, signIn, signOut } = NextAuth({
         httpOnly: true,
         sameSite: isProduction ? "none" : "lax",
         path: "/",
-        secure: isProduction
+        secure: isProduction,
+        domain: 'nextjs-dashboard-dev-seven.vercel.app'
       },
     },
     callbackUrl: {
@@ -55,7 +56,8 @@ export const { auth, signIn, signOut } = NextAuth({
       options: {
         sameSite: isProduction ? "none" : "lax",
         path: "/",
-        secure: isProduction
+        secure: isProduction,
+        domain: 'nextjs-dashboard-dev-seven.vercel.app'
       },
     },
     csrfToken: {
@@ -64,7 +66,8 @@ export const { auth, signIn, signOut } = NextAuth({
         httpOnly: true,
         sameSite: isProduction ? "none" : "lax",
         path: "/",
-        secure: isProduction
+        secure: isProduction,
+        domain: 'nextjs-dashboard-dev-seven.vercel.app'
       },
     },
   },
