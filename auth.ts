@@ -16,6 +16,8 @@ async function getUser(email: string): Promise<User | undefined> {
   }
 }
  
+const isProduction = process.env.NODE_ENV === "production";
+
 export const { auth, signIn, signOut } = NextAuth({
   ...authConfig,
   providers: [
@@ -43,26 +45,26 @@ export const { auth, signIn, signOut } = NextAuth({
       name: `__Secure-next-auth.session-token`,
       options: {
         httpOnly: true,
-        sameSite: "none",
+        sameSite: isProduction ? "none" : "lax",
         path: "/",
-        secure: true
+        secure: isProduction
       },
     },
     callbackUrl: {
       name: `__Secure-next-auth.callback-url`,
       options: {
-        sameSite: "none",
+        sameSite: isProduction ? "none" : "lax",
         path: "/",
-        secure: true,
+        secure: isProduction
       },
     },
     csrfToken: {
       name: `__Host-next-auth.csrf-token`,
       options: {
         httpOnly: true,
-        sameSite: "none",
+        sameSite: isProduction ? "none" : "lax",
         path: "/",
-        secure: true,
+        secure: isProduction
       },
     },
   },

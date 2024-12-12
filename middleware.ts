@@ -1,14 +1,15 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
+const isProduction = process.env.NODE_ENV === "production";
+
 export function middleware(request: NextRequest) {
   const response = NextResponse.next();
 
-  // Set the Vercel live token cookie with appropriate attributes
   response.cookies.set('__vercel_live_token', '', {
     httpOnly: true,
-    secure: true,
-    sameSite: 'none',
+    secure: isProduction,
+    sameSite: isProduction ? 'none' : 'lax',
     path: '/',
   });
 
