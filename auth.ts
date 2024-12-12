@@ -45,17 +45,8 @@ export const { auth, signIn, signOut } = NextAuth({
         httpOnly: true,
         sameSite: "none",
         path: "/",
-        secure: true,
-      },
-    },
-    vercelToken: {
-      name: "__vercel_live_token",
-      options: {
-        httpOnly: true,
-        sameSite: "none",
-        path: "/",
         secure: true
-      }
+      },
     },
     callbackUrl: {
       name: `__Secure-next-auth.callback-url`,
